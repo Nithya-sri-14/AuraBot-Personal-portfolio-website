@@ -181,7 +181,10 @@ function dispatchAuthChange() {
 // ---------------------------------------------------------------------------
 function initSocketIO() {
   try {
-    SOCKET = io(window.location.origin, {
+    const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? window.location.origin
+      : 'https://aurabot-personal-portfolio-website.onrender.com';
+    SOCKET = io(backendUrl, {
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionDelay: 1000
@@ -1972,7 +1975,7 @@ function initAdminView() {
     const safeUser = String(rawUser).trim().replace(/[^a-zA-Z0-9_-]/g, '_') || 'admin';
     if (hasResume) {
       preview.className = 'resume-preview-status-box success';
-      label.innerHTML = `<strong>Active:</strong> Resume exists. <a href="/assets/resume_${safeUser}.pdf" target="_blank" class="live-resume-anchor">View resume.pdf</a>`;
+      label.innerHTML = `<strong>Active:</strong> Resume exists. <a href="/api/portfolio/resume?user=${encodeURIComponent(safeUser)}" target="_blank" class="live-resume-anchor">View resume.pdf</a>`;
     } else {
       preview.className = 'resume-preview-status-box';
       label.textContent = 'No resume uploaded yet.';
